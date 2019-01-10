@@ -1,0 +1,5 @@
+﻿  Gioco.cpp
+e:\joseppeo\download\alberoanimalegioco-master(1)\alberoanimalegioco-master\alberoanimale\alberoanimale\gioco.cpp(119): warning C4267: 'argomento': conversione da 'size_t' a 'int'. Possibile perdita di dati.
+  main.cpp
+  Generazione del codice in corso...
+  AlberoAnimale.vcxproj -> E:\JoseppeO\Download\AlberoAnimaleGioco-master(1)\AlberoAnimaleGioco-master\AlberoAnimale\x64\Debug\AlberoAnimale.exe
