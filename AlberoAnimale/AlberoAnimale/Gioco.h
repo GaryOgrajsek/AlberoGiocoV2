@@ -1,7 +1,6 @@
 #pragma once
 #include "Albero.h"
 #include "Albero.cpp"
-#include"Coda.h"
 #include <iostream>
 #include<string>
 #include<fstream>
@@ -24,8 +23,10 @@ public:
 	string Converti();
 	void Salva();
 	NodoAlbero<string>* Carica();
-	int TrovaIndice(Nodo<string>*);
-	Nodo<string>* DividiStringa(string, Coda<string>);
-	NodoAlbero<string>* CostruisciAlbero(Nodo<string>*);
+	//int findClosingParen(string, int);
+	int indiceVirgola(string);
+	//int TrovaIndice(string, int, int);
+	//string* DividiStringa(string);
+	NodoAlbero<string>* CostruisciAlbero(string);
 	~Gioco();
 };
