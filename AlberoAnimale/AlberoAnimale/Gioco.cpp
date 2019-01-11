@@ -1,6 +1,4 @@
 #include "Gioco.h"
-#include <stack>
-#include<cstring>
 using namespace std;
 
 Gioco::Gioco(){}
@@ -108,7 +106,6 @@ void Gioco::Salva() {
 /*Inserisce in una stringa il file, poi ottiene l'indice del nodo madre
 e infine costruisce l'albero*/
 NodoAlbero<string>* Gioco::Carica() {
-	Coda<string> alberoCoda;
 	ifstream file("Albero.txt");
 	string alberoStringa = "";
 	if (file.is_open()) { //apre il file
@@ -117,11 +114,13 @@ NodoAlbero<string>* Gioco::Carica() {
 		}
 		cout << endl;
 	}
-	return CostruisciAlbero(DividiStringa(alberoStringa, alberoCoda));
+	return CostruisciAlbero(alberoStringa);
 }
 
-Nodo<string>* Gioco::DividiStringa(string vecchiaStringa, Coda<string> alberoCoda) {
+/*string Gioco::DividiStringa(string vecchiaStringa) {
 	int indice = 0, old;
+	Coda<string> alberoCoda;
+	string ciao[1000];
 	while (indice < vecchiaStringa.length()) {
 		if (to_string(vecchiaStringa[indice]) == "(" || to_string(vecchiaStringa[indice]) == ")") {
 			alberoCoda.Inserisci(to_string(vecchiaStringa[indice]));
@@ -135,60 +134,82 @@ Nodo<string>* Gioco::DividiStringa(string vecchiaStringa, Coda<string> alberoCod
 			alberoCoda.Inserisci(vecchiaStringa.substr(old, ++indice));
 		}
 	}
-	
-	return alberoCoda.getL();
-}
+	Nodo<string>* L = alberoCoda.getL();
+	int indice = 0;
+	while(L!=0) {
+		ciao[indice] = L->getInfo();
+		L = L->getPunt();
+	}
+	return ciao;
+}*/
 
 /*Costruisce l'albero a partire dalla visualizzazione con le parentesi. AlberoStringa è la visualizzazione
 si è l'indice iniziale della stringa o sottostringa presa in considerazione ed ei l'indice finale*/
-NodoAlbero<string>* Gioco::CostruisciAlbero(Nodo<string>* L) {
-	
-	//Se siamo arrivati ad un nodo foglia, si restituisce nullpointer
-	if (L==nullptr) {
-		return nullptr;
-	}
+NodoAlbero<string>* Gioco::CostruisciAlbero(string str){
+	int lastChar = str.find("(");
+	NodoAlbero<string>* root = new NodoAlbero<string>(str.substr(0, lastChar));
+	int posizionevirgola=str.find_last_of(",");
+	if (to_string(str[lastChar + 2]) != ")") {
+		int index = indiceVirgola(str);
 
-	//Viene creato il nodo a cui viene assegnata 
-	NodoAlbero<string>* root = new NodoAlbero<string>(L->getInfo());
-	int index = -1;
-
-	// if next char is '(' find the index of 
-	// its complement ')' 
-	if (L->getPunt() != nullptr && (L->getPunt())->getInfo() == "(");
-		index = TrovaIndice(L);
-
-	// if index found 
-	if (index != -1) {
-
-		// call for left subtree 
-		root->SetLeftLink(CostruisciAlbero(L));
-
-		// call for right subtree 
-		root->SetRightLink(CostruisciAlbero(L);
+		root->SetLeftLink(CostruisciAlbero(str.substr((lastChar + 2), index-1)));
+		root->SetRightLink(CostruisciAlbero(str.substr((posizionevirgola + 1), (str.find_last_of(")")))));
 	}
 	return root;
 }
 
-int Gioco::TrovaIndice(Nodo<string>* L) {
-	if (L == nullptr) {
+int Gioco::indiceVirgola(string str) {
+	int counter = 0;
+	for (int i = 0; i < str.length(); i++) {
+		if (str[i] == ',') {
+			counter++;
+		}
+	}
+	counter = counter / 2;
+	int mine = 0;
+	for (int i = 0; i < str.length(); i++) {
+		if (str[i] == ',') {
+			mine++;
+			if (mine == counter) {
+				return i;
+			}
+		}
+	}
+}
+
+/*
+int Gioco::findClosingParen(string text, int openPos) {
+	int closePos = openPos;
+	int counter = 1;
+	while (counter > 0) {
+		char c = text[++closePos];
+		if (c == '(') {
+			counter++;
+		}
+		else if (c == ')') {
+			counter--;
+		}
+	}
+	return closePos;
+}
+
+int Gioco::TrovaIndice(string str, int si, int ei) {
+	if (si > ei) {
 		return -1;
 	}
 
 	// Inbuilt stack 
-	stack<string> s;
+	stack<char> s;
 
-	Nodo<string>* temp = L;
-	while(
 	for (int i = si; i <= ei; i++) {
 
 		// if open parenthesis, push it 
-		if (alberoStringa[i] == '(') {
-			s.push(to_string(alberoStringa[i]));
-		}
+		if (str[i] == '(')
+			s.push(str[i]);
 
 		// if close parenthesis 
-		else if (alberoStringa[i] == ')') {
-			if (s.top() == to_string('(')) {
+		else if (str[i] == ')') {
+			if (s.top() == '(') {
 				s.pop();
 
 				// if stack is empty, this is  
@@ -201,5 +222,5 @@ int Gioco::TrovaIndice(Nodo<string>* L) {
 	// if not found return -1 
 	return -1;
 }
-
+*/
 Gioco::~Gioco(){}
