@@ -153,6 +153,7 @@ string Albero<tipo>::Converti(string & stringa, NodoAlbero<tipo>* T) {
 			Converti(stringa, T->GetLeftLink());
 		}
 		if (T->GetRightLink() != nullptr) {
+			stringa += ",";
 			Converti(stringa, T->GetRightLink());
 		}
 	}
