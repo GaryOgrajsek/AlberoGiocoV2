@@ -1,6 +1,15 @@
 #include "Gioco.h"
 using namespace std;
 
+/*Queste macro sono necessarie per poter caricare l'albero
+Il loro significato è spiegato nella documentazione e, in breve
+all'inizio della funzione "Carica"*/
+#define primaSx (lastChar + 1)
+#define ultimaSx (index-primaSx)
+#define primaDx (index+1)
+#define ultimaDx ((str.find_last_of(")")-1)-primaDx+1)
+
+/*Costruttore*/
 Gioco::Gioco(){}
 
 /*Quando l'utente avvia il programma, viene mostrato il menù che permette
@@ -88,7 +97,7 @@ void Gioco::ControlloAnimale(int risposta, NodoAlbero<string>* T) {
 		getline(cin, diverso);
 		ModificaAnimale(diverso, T);
 	}
-	cout << "Termine del gioco"<<endl;
+	cout << "Termine del gioco"<<endl<<endl;
 }
 
 /*Avvia la funzione dell'albero converti per avere l'albero con le parentesi*/
@@ -111,116 +120,65 @@ NodoAlbero<string>* Gioco::Carica() {
 	if (file.is_open()) { //apre il file
 		while (getline(file, alberoStringa)) {
 			cout << "LOADING";
+			system("CLS");
 		}
 		cout << endl;
 	}
 	return CostruisciAlbero(alberoStringa);
 }
 
-/*string Gioco::DividiStringa(string vecchiaStringa) {
-	int indice = 0, old;
-	Coda<string> alberoCoda;
-	string ciao[1000];
-	while (indice < vecchiaStringa.length()) {
-		if (to_string(vecchiaStringa[indice]) == "(" || to_string(vecchiaStringa[indice]) == ")") {
-			alberoCoda.Inserisci(to_string(vecchiaStringa[indice]));
-			indice++;
-		}
-		else {
-			old = indice;
-			while (to_string(vecchiaStringa[indice]) != "?") {
-				indice++;
-			}
-			alberoCoda.Inserisci(vecchiaStringa.substr(old, ++indice));
-		}
-	}
-	Nodo<string>* L = alberoCoda.getL();
-	int indice = 0;
-	while(L!=0) {
-		ciao[indice] = L->getInfo();
-		L = L->getPunt();
-	}
-	return ciao;
-}*/
-
-/*Costruisce l'albero a partire dalla visualizzazione con le parentesi. AlberoStringa è la visualizzazione
-si è l'indice iniziale della stringa o sottostringa presa in considerazione ed ei l'indice finale*/
+/*Costruisce l'albero a partire dalla visualizzazione con le parentesi. Il testo fino alla prima parentesi
+aperta è l'elemento del nodo. Da due caratteri dopo la parentesi fino alla virgola è il nodo sx, quello dopo
+la virgola fino alla parentesi chiusa finale è la parte dx (il funzionamento è meglio spiegato nella documentazione)*/
 NodoAlbero<string>* Gioco::CostruisciAlbero(string str){
 	int lastChar = str.find("(");
 	NodoAlbero<string>* root = new NodoAlbero<string>(str.substr(0, lastChar));
-	int posizionevirgola=str.find_last_of(",");
-	if (to_string(str[lastChar + 2]) != ")") {
+	if (str[lastChar + 1] != ')') {
 		int index = indiceVirgola(str);
-
-		root->SetLeftLink(CostruisciAlbero(str.substr((lastChar + 2), index-1)));
-		root->SetRightLink(CostruisciAlbero(str.substr((posizionevirgola + 1), (str.find_last_of(")")))));
+		root->SetLeftLink(CostruisciAlbero(str.substr(primaSx, ultimaSx)));
+		root->SetRightLink(CostruisciAlbero(str.substr(primaDx, ultimaDx)));
 	}
 	return root;
 }
 
+/*Per poter generare una sottostringa, è necessario sapere la posizione della virgola nella stringa.
+Per far ciò, troveremo la posizione della seconda parentesi aperta e la sua corrispondente chiusa*/
 int Gioco::indiceVirgola(string str) {
-	int counter = 0;
-	for (int i = 0; i < str.length(); i++) {
-		if (str[i] == ',') {
-			counter++;
-		}
-	}
-	counter = int(counter / 2);
-	int mine = 0;
-	for (int i = 0; i < str.length(); i++) {
-		if (str[i] == ',') {
-			mine++;
-			if (mine == counter) {
-				return i;
-			}
-		}
-	}
-}
+	//Contatore per determinare quando siamo arrivati alla fine
+	int i = 1;
 
-/*
-int Gioco::findClosingParen(string text, int openPos) {
-	int closePos = openPos;
-	int counter = 1;
-	while (counter > 0) {
-		char c = text[++closePos];
+	//La posizione di fine sarà maggiore di quella di inizio (ovvero dove si trova la prima "(")
+	int fine;
+	
+	//Per poter iniziare dalla 2^ parentesi, si trova la posizione della prima e poi la successiva
+	//partendo da quest'ultima posizione
+	int contaparentesi = str.find("(");
+	int inizio = fine = (str.find("(", contaparentesi+1)+1);
+
+	//Contatore per non sforare
+	int k = 0;
+
+	//Finché i sarà maggiore di zero, allora non siamo arrivati alla parentesi chiusa corrispondente
+	while (k<=fine) {
+		char c = str[fine++];
+
+		//Se il carattere c è un'altra parentesi aperta, allora dobbiamo aumentare il contatore
+		//in modo tale da "escluderla" dalla soluzione. Infatti, se non incrementassimo i, risulterebbe
+		//la sua parentesi chiusa quella corretta.
 		if (c == '(') {
-			counter++;
+			i++;
 		}
 		else if (c == ')') {
-			counter--;
+			i--;
 		}
+		if (i == 0) {
+			break;
+		}
+		k++;
 	}
-	return closePos;
+	//Fine è ora la nostra posizione desiderata
+	return fine;
 }
 
-int Gioco::TrovaIndice(string str, int si, int ei) {
-	if (si > ei) {
-		return -1;
-	}
-
-	// Inbuilt stack 
-	stack<char> s;
-
-	for (int i = si; i <= ei; i++) {
-
-		// if open parenthesis, push it 
-		if (str[i] == '(')
-			s.push(str[i]);
-
-		// if close parenthesis 
-		else if (str[i] == ')') {
-			if (s.top() == '(') {
-				s.pop();
-
-				// if stack is empty, this is  
-				// the required index 
-				if (s.empty())
-					return i;
-			}
-		}
-	}
-	// if not found return -1 
-	return -1;
-}
-*/
+/*Distruttore*/
 Gioco::~Gioco(){}
