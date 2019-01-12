@@ -12,7 +12,6 @@ private:
 	NodoAlbero<string>* T;
 	bool giaCarico;
 	
-
 public:
 	Gioco();
 	int Menu();
@@ -23,10 +22,7 @@ public:
 	string Converti();
 	void Salva();
 	NodoAlbero<string>* Carica();
-	//int findClosingParen(string, int);
 	int indiceVirgola(string);
-	//int TrovaIndice(string, int, int);
-	//string* DividiStringa(string);
 	NodoAlbero<string>* CostruisciAlbero(string);
 	~Gioco();
 };
