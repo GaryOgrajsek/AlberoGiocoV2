@@ -165,7 +165,7 @@ int Gioco::indiceVirgola(string str) {
 			counter++;
 		}
 	}
-	counter = counter / 2;
+	counter = int(counter / 2);
 	int mine = 0;
 	for (int i = 0; i < str.length(); i++) {
 		if (str[i] == ',') {
