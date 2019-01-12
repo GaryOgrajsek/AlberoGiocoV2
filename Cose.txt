@@ -1,0 +1,5 @@
+COSE DA FARE
+-sistemare caricamento
+-commentare caricamento
+-revisione
+-documentazione
