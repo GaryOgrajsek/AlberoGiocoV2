@@ -22,7 +22,7 @@ public:
 	string Converti();
 	void Salva();
 	NodoAlbero<string>* Carica();
-	int indiceVirgola(string);
 	NodoAlbero<string>* CostruisciAlbero(string);
+	int indiceVirgola(string);
 	~Gioco();
 };
