@@ -122,7 +122,6 @@ NodoAlbero<string>* Gioco::Carica() {
 			cout << "LOADING";
 			system("CLS");
 		}
-		cout << endl;
 	}
 	return CostruisciAlbero(alberoStringa);
 }
