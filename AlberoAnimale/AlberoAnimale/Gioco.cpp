@@ -31,12 +31,13 @@ int Gioco::Menu() {
 altrimenti restituisce gatto*/
 void Gioco::Inizializza() {
 	ifstream file("Albero.txt");
-	if (file.good()) { //se esiste il file, lo carica, sennò crea l'albero
-		T=Carica();
-		RichiestaAnimale(T);
-	}
-	else {
-		if (!giaCarico) {
+	if (!giaCarico) {
+		if (file.good()) { //se esiste il file, lo carica, sennò crea l'albero
+			T = Carica();
+			giaCarico = true;
+			RichiestaAnimale(T);
+		}
+		else {
 			AlberoGioco.InserisciRicorsivo("Vola?");
 			T = AlberoGioco.getT();
 			NodoAlbero<string>* t1 = new NodoAlbero<string>("Gatto");
@@ -44,8 +45,8 @@ void Gioco::Inizializza() {
 			T->SetLeftLink(t1);
 			T->SetRightLink(t2);
 			giaCarico = true;
+			RichiestaAnimale(T);
 		}
-		RichiestaAnimale(T);
 	}
 }
 
