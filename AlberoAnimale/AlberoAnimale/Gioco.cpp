@@ -35,7 +35,6 @@ void Gioco::Inizializza() {
 		if (file.good()) { //se esiste il file, lo carica, sennò crea l'albero
 			T = Carica();
 			giaCarico = true;
-			RichiestaAnimale(T);
 		}
 		else {
 			AlberoGioco.InserisciRicorsivo("Vola?");
@@ -45,9 +44,9 @@ void Gioco::Inizializza() {
 			T->SetLeftLink(t1);
 			T->SetRightLink(t2);
 			giaCarico = true;
-			RichiestaAnimale(T);
 		}
 	}
+	RichiestaAnimale(T);
 }
 
 /*Funzione per richiedere l'animale */
